@@ -12,13 +12,9 @@ export default function SignUpPage({navigation}) {
     const [index, setIndex] = useState(1);  
     const isCarousal =useRef(null);
     const sliderData = [
-
-       
-
         {
             id :1,
-            image : require("../../assets/images/pinkTshirt.png"),
-            
+            image : require("../../assets/images/pinkTshirt.png"), 
         },
         {
             id :2,
@@ -26,16 +22,12 @@ export default function SignUpPage({navigation}) {
             title : 'Fastacy',
             subTitle1 : 'Classy',
             subTitle2 : 'Fashion',
-            titleImage : require("../../assets/Assets/Polygon.png")
-                
+            titleImage : require("../../assets/Assets/Polygon.png") 
         },
-
         {
             id :3,
             image : require("../../assets/images/signup.png"),
-            
         }
-        
     ]
 
     render_items = ({item})=>(
@@ -49,20 +41,12 @@ export default function SignUpPage({navigation}) {
             {item.titleImage && (
                 <View style={styles.polygenContainer}>
                     <Text style={styles.FashionTitle}>{item.subTitle2}</Text>
-                    <Image style={styles.polygon} source={item.titleImage} />
-                            
+                    <Image style={styles.polygon} source={item.titleImage} />         
                 </View>
             )}
-
         </View>
     </View>
     )
-
-    // const sliderHandle = (index) =>{ 
-    //     setSlider(index)
-        
-    // }
-
   return (
     
         <SafeAreaView style={styles.main}>
