@@ -1,71 +1,87 @@
-import { Button, FlatList, Image, SafeAreaView, StyleSheet, Text, Touchable,Dimensions, TouchableOpacity, View } from 'react-native'
-import React,{useRef} from 'react'
+import { Button, FlatList, Image, SafeAreaView, StyleSheet, Text, Touchable,Dimensions, TouchableOpacity, View, ScrollView } from 'react-native'
+import React,{useEffect, useRef, useState} from 'react'
 import Carousel,{Pagination} from 'react-native-snap-carousel';
 
 const {width, height}= Dimensions.get('screen')
 
 export default function Main() {
+    const [data,setData]= useState([])
 
-  const data = [
-    {
-      id : 1,
-      image : require('../../assets/images/blueDress.png'),
-      price : 178.99,
-      category : 'women'
-    },
-    {
-      id : 2,
-      image : require('../../assets/images/eyeWear.png'),
-      price : 102.13,
-      category : 'eyeWear'
-    },
-    {
-      id : 3,
-      image : require('../../assets/images/green_kurta.jpg'),
-      price : 300.74,
-      category : 'women'
-    },
-    {
-      id : 4,
-      image : require('../../assets/images/pinkTshirt.png'),
-      price : 58.98,
-      category : 'women'
-    },
-    {
-      id : 5,
-      image : require('../../assets/images/redDress.png'),
-      price : 85.25,
-      category : 'women'
-    },
-    {
-      id : 6,
-      image : require('../../assets/images/shirt.png'),
-      price : 254.45,
-      category : 'winter'
-    },
-    {
-      id : 7,
-      image : require('../../assets/images/whiteDress.png'),
-      price : 251.85,
-      category : 'women'
-    },
-    {
-      id : 8,
-      image : require('../../assets/images/whiteKurtha.png'),
-      price : 251.85,
-      category : 'winter'
-    }
-  ]
+    useEffect(()=>{
+        setData([
+            {
+              id : 1,
+              image : require('../../assets/images/blueDress.png'),
+              price : 178.99,
+              category : 'women'
+            },
+            {
+              id : 2,
+              image : require('../../assets/images/eyeWear.png'),
+              price : 102.13,
+              category : 'eyeWear'
+            },
+            {
+              id : 3,
+              image : require('../../assets/images/green_kurta.jpg'),
+              price : 300.74,
+              category : 'women'
+            },
+            {
+              id : 4,
+              image : require('../../assets/images/pinkTshirt.png'),
+              price : 58.98,
+              category : 'women'
+            },
+            {
+              id : 5,
+              image : require('../../assets/images/redDress.png'),
+              price : 85.25,
+              category : 'women'
+            },
+            {
+              id : 6,
+              image : require('../../assets/images/shirt.png'),
+              price : 254.45,
+              category : 'winter'
+            },
+            {
+              id : 7,
+              image : require('../../assets/images/whiteDress.png'),
+              price : 251.85,
+              category : 'women'
+            },
+            {
+              id : 8,
+              image : require('../../assets/images/whiteKurtha.png'),
+              price : 251.85,
+              category : 'winter'
+            }
+          ])
+
+    },[])
+    
+
+
   const isCarousal =useRef(null);
-  render_items=({item})=>(
-    <View style={styles.sldierContainer}>
-      <Image style={styles.sliderImage} source={item.image} />
+
+  const render_items=({item})=>(
+    <View style={styles.sliderContainer}>
+        <Image style={styles.sliderImage} source={item.image} />
     </View>
+  )
+
+  const popularItems=({item})=>(
+    <View style={styles.popularContainer}>
+        <Image style={styles.popularImage} source={item.image} />
+    </View>
+
   )
 
   return (
     <SafeAreaView style={styles.Main}>
-      <View style={styles.Header}>
+        <View>
+        <View style={styles.Header}>
         <View style={styles.HeaderRight}>
           
         </View>
@@ -90,17 +106,35 @@ export default function Main() {
         </TouchableOpacity>
       </View>
       
-      <Carousel 
-       ref= {isCarousal}
-       data={data}
-       renderItem = {render_items}
-       sliderWidth = {width}
-       itemWidth = {width}
-       layout={'tinder'} 
-       layoutCardOffset={`3`} 
-   
-   
-      />
+            <Carousel 
+            ref= {isCarousal}
+            data={data}
+            renderItem = {render_items}
+            sliderWidth = {width}
+            sliderHeight = {width*.5}
+            itemWidth = {width*.4}
+            layout={'default'} 
+            inactiveSlideScale = {.7}  
+            firstItem={1}
+            style={styles.carousel}
+            vertical={false}
+            />
+        </View>
+      
+        <View>
+            <View>
+                <Text>Most Popular</Text>
+                <Text>See All</Text>
+            </View>
+            <FlatList 
+                data={data}
+                renderItem={popularItems}
+                keyExtractor={(item) => item.id} 
+                horizontal={false}
+                numColumns={2}
+            />
+      </View>
+
 
       
     </SafeAreaView>
@@ -109,7 +143,7 @@ export default function Main() {
 
 const styles = StyleSheet.create({
   Main: {
-    flex: 1,
+    
     // Add other styles as needed
   },
   Header: {
@@ -133,13 +167,37 @@ const styles = StyleSheet.create({
   ButtonText: {
     // Styles for the text inside the buttons
   },
-  sldierContainer :{
-    width,
-    flex :1,
-    alignItems : 'center'
+  sliderContainer :{
+    width : '100%',
+    alignItems : 'center',
+    justifyContent : 'center',
+
   },
   sliderImage :{
-    width : '50%',
-    flex : .8
+    width : '100%',
+    height : 250
+    
+  },
+  carousel :{
+   
+  },
+  popularContainer : {
+    
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', 
+    marginBottom: 10, 
+
+    
+
+
+
+
+  },
+  popularImage : {
+    width : '45%',
+    
+    height :width/2
+
   },
 })
