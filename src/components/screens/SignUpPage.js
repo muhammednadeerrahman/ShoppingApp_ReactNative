@@ -7,7 +7,7 @@ import Carousel,{Pagination} from 'react-native-snap-carousel';
 const {width, height}= Dimensions.get('screen')
 const itemHeight = Math.round(height * .7)
 
-export default function SignUpPage({Navigation}) {
+export default function SignUpPage({navigation}) {
 
     const [index, setIndex] = useState(1);  
     const isCarousal =useRef(null);
@@ -95,14 +95,19 @@ export default function SignUpPage({Navigation}) {
 
             <View style={styles.bottomContainer}>
                 <View style={styles.leftBottom}>
-                    <Text style={styles.category}>Tops</Text>
+                    <View style={styles.yellowContainer}>
+                        <Text style={styles.category}>Tops</Text>
+                        <Text style={styles.yellow}>----</Text>
+                    </View>
+                    
                     <Text style={styles.category}>Tshirts</Text>
                     <Text style={styles.category}>Hoddies</Text>
                     <Text style={styles.category}>126 + Categories</Text>
                 </View>
                 <View style={styles.RightBottom}>
                     <TouchableOpacity 
-                        onPress={()=>Navigation.navigate('')}
+                        activeOpacity={0.3}
+                        onPress={()=>navigation.navigate('Main')}
                         style={styles.SignUpButton}
                     >
                         <Text style={styles.SignupText}>Sign Up</Text>
@@ -198,8 +203,21 @@ const styles = StyleSheet.create({
         alignItems : 'flex-end'
     },
     leftBottom :{},
+    yellowContainer: {
+        flexDirection: 'row',
+        alignItems : 'center'
+    },
+    yellow: {
+        color :'#eba253',
+        marginLeft : 10,
+        marginTop : 10,
+        fontSize : 12,
+    },
     category :{
-        marginTop : 10
+        marginTop : 10,
+        fontSize : 12,
+        color : '#A6A6A6'
+
     },
     RightBottom :{},
     SignUpButton :{

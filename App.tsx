@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Signup from './src/components/screens/Signup';
 import SignUpPage from './src/components/screens/SignUpPage';
+import Main from './src/components/screens/Main';
 
 export default function App() {
 
@@ -18,7 +19,7 @@ export default function App() {
           {headerShown : false}
         }>
           <Stack.Screen name='SignUp' component={SignUpPage}  />
-          <Stack.Screen name='Index' component={Index}  />
+          <Stack.Screen name='Main' component={Main}  />
         </Stack.Navigator>
 
       </NavigationContainer>
