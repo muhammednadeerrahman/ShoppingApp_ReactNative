@@ -6,6 +6,8 @@ const {width, height}= Dimensions.get('screen')
 
 export default function Main() {
     const [data,setData]= useState([])
+    const [index, setIndex] = useState(2);  
+
 
     useEffect(()=>{
         setData([
@@ -59,6 +61,7 @@ export default function Main() {
             }
           ])
 
+
     },[])
     
 
@@ -69,13 +72,6 @@ export default function Main() {
     <View style={styles.sliderContainer}>
         <Image style={styles.sliderImage} source={item.image} />
     </View>
-  )
-
-  const popularItems=({item})=>(
-    <View style={styles.popularContainer}>
-        <Image style={styles.popularImage} source={item.image} />
-    </View>
-
   )
 
   return (
@@ -115,25 +111,31 @@ export default function Main() {
             itemWidth = {width*.4}
             layout={'default'} 
             inactiveSlideScale = {.7}  
-            firstItem={1}
+            firstItem={2}
             style={styles.carousel}
             vertical={false}
+            onSnapToItem = {index => setIndex(index)}
             />
         </View>
       
-        <View>
+       
             <View>
                 <Text>Most Popular</Text>
                 <Text>See All</Text>
             </View>
             <FlatList 
+                
                 data={data}
-                renderItem={popularItems}
-                keyExtractor={(item) => item.id} 
-                horizontal={false}
+                renderItem={({item})=>(
+                    <View style={styles.item}>
+                        <Image style={styles.sliderImage} source={item.image} resizeMode='contain' />
+                    </View>
+                  )}
                 numColumns={2}
+                horizontal={false}
+
             />
-      </View>
+      
 
 
       
@@ -181,12 +183,15 @@ const styles = StyleSheet.create({
   carousel :{
    
   },
-  popularContainer : {
+  list : {
+    width,
+
     
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between', 
-    marginBottom: 10, 
+  },
+  item : {
+    flex : 1
+
+    
 
     
 
@@ -195,9 +200,9 @@ const styles = StyleSheet.create({
 
   },
   popularImage : {
-    width : '45%',
+    width : 200,
     
-    height :width/2
+    height :200
 
   },
 })
