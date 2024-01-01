@@ -1,7 +1,12 @@
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Arrow from '../../assets/Assets/arrow.svg'
+import Heart from '../../assets/Assets/heart.svg'
 
+
+const {width,height} = Dimensions.get('screen')
+imageWidth = Math.round(width-40)
 export default function Product({route,navigation}) {
     const {item} = route.params
 
@@ -18,77 +23,214 @@ export default function Product({route,navigation}) {
         }
         console.log(await AsyncStorage.getItem('items'))
       };
+      const colorData = [
+        {
+            id :0,
+            color:'#fff'
+        },
+        {
+            id :1,
+            color:'#C4B5B1'
+        },
+        {
+            id :2,
+            color:'#D6E1FD'
+        },
+        {
+            id :3,
+            color:'#F6D6FE'
+        },
+        {
+            id :4,
+            color:'#D5EEED'
+        },
+        {
+            id :5,
+            color:'#D9D9D9'
+        },
+        {
+            id :6,
+            color:'#FED6DF'
+        },
+
+      ]
   return (
     <SafeAreaView style={styles.Main}>
-        <View>
-            <Text>{item.id}</Text>
-            <Text>{item.price}</Text>
-            
-        </View>
-        <Text style={styles.title}>Beach Cochet Lace</Text>
-        <Text style={styles.price}>{item.price}</Text>
-        <Image  style={styles.image} source={item.image} resizeMode='contain' />
-        
-        <View style={styles.sizeContainer}>
-            <Text style={styles.sizeTitle}>size</Text>
-            <View style={styles.sizeList}>
-                <TouchableOpacity activeOpacity={.6} style={styles.sizeButton} >
-                    <Text style={styles.buttonSizeText}>S</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.sizeButton} >
-                    <Text style={styles.buttonSizeText}>M</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.sizeButton} >
-                    <Text style={styles.buttonSizeText}>L</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.sizeButton} >
-                    <Text style={styles.buttonSizeText}>XL</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.sizeButton} >
-                    <Text style={styles.buttonSizeText}>XXL</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-        <View style={styles.colorContainer}>
-            <Text style={styles.colorTitle}>size</Text>
-            <View style={styles.ColorList}>
-                <TouchableOpacity style={styles.ColorButton} ></TouchableOpacity>
-                <TouchableOpacity style={styles.ColorButton} ></TouchableOpacity>
-                <TouchableOpacity style={styles.ColorButton} ></TouchableOpacity>
-                <TouchableOpacity style={styles.ColorButton} ></TouchableOpacity>
-                <TouchableOpacity style={styles.ColorButton} ></TouchableOpacity>
-            </View>
-        </View>
-        <View style={styles.bottomContainer}>
-            <Text style={styles.bottomPrice}></Text>
-            <TouchableOpacity activeOpacity={.8}  style={styles.AddCart} onPress={addCart}>
-                <Text style={styles.AddCartText}>Add  to cart</Text>
+        <View style={styles.navContainer}>
+            <TouchableOpacity style={styles.navButtons} activeOpacity={.8}>
+                <Arrow  width={35} height={35} />
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={.8}>
+                <Heart width={35} height={35} />
             </TouchableOpacity>
         </View>
+        <ScrollView
+            showsVerticalScrollIndicator={false} 
+            contentContainerStyle={styles.scrollContainer}
+        >
+            <Text style={styles.title}>Beach Cochet Lace</Text>
+            <Text style={styles.price}>${item.price}</Text>
+            <Image style={styles.image} source={item.image}  />
+            
+            <View style={styles.sizeContainer}>
+                <Text style={styles.sizeTitle}>Select Size</Text>
+                <View style={styles.sizeList}>
+                    <TouchableOpacity activeOpacity={.6} style={styles.sizeButtonActive} >
+                        <Text style={styles.buttonSizeTextActive}>S</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.sizeButton} >
+                        <Text style={styles.buttonSizeText}>M</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.sizeButton} >
+                        <Text style={styles.buttonSizeText}>L</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.sizeButton} >
+                        <Text style={styles.buttonSizeText}>XL</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.sizeButton} >
+                        <Text style={styles.buttonSizeText}>XXL</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.colorContainer}>
+                <Text style={styles.colorTitle}>Select Color</Text>
+                    {colorData.map((item)=>(
+                        <TouchableOpacity style={[styles.ColorButton,{backgroundColor:item.color}]} ></TouchableOpacity>
+                    ))}
+                    {/* <FlatList
+                    contentContainerStyle={styles.ColorList}
+                    data={colorData}
+                    renderItem={({item})=>(
+                        <TouchableOpacity style={[styles.ColorButton,{backgroundColor:item.color}]} ></TouchableOpacity>
+                    )}
+                    /> */}
+            </View>
+            <View style={styles.bottomContainer}>
+                <Text style={styles.bottomPrice}>${item.price}</Text>
+                <TouchableOpacity activeOpacity={.8}  style={styles.AddCart} onPress={addCart}>
+                    <Text style={styles.AddCartText}>Add  to cart</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-    Main :{},
-    title :{},
-    price :{},
-    image :{
-        width: '100%',
-        height: 200,
+    Main :{
+        width,
+        height,
+        alignItems:'center',
+        padding:20
+
     },
-    sizeContainer :{},
-    sizeTitle :{},
-    sizeList :{},
-    sizeButton :{},
-    buttonSizeText :{},
-    colorContainer :{},
-    colorTitle :{},
-    ColorList :{},
-    ColorButton :{},
-    bottomContainer :{},
+    navContainer:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        width:'100%',
+        marginBottom:20,
+        alignItems: 'center'
+    },
+    navButtons :{
+
+    },
+    scrollContainer:{
+
+    },
+    title :{
+        fontSize:22,
+        fontWeight:'bold',
+        color:'#000',
+
+    },
+    price :{
+        fontSize:18,
+        fontWeight:'bold',
+        color:'#000',
+        marginVertical:10,
+    },
+    image :{
+        width: imageWidth,
+        height :imageWidth,
+        borderRadius : 10,
+        aspectRatio : 1/1
+    },
+    sizeContainer :{
+        width : '100%',
+        paddingVertical: 20,
+
+    },
+    sizeTitle :{
+        color: '#000',
+        fontWeight : 'bold',
+        fontSize : 16,
+        marginBottom: 30,
+    },
+    sizeList :{
+        marginVertical : 30,
+        flexDirection: 'row'
+    },
+    sizeButton :{
+        width:40,
+        height : 40,
+        alignItems:'center',
+        justifyContent : 'center',
+        borderWidth : 1,
+        borderRadius : 10,
+        marginRight : 10,
+        borderColor : '#A6A6A6'
+    },
+    sizeButtonActive :{
+        width:40,
+        height : 40,
+        alignItems:'center',
+        justifyContent : 'center',
+        borderWidth : 1,
+        borderRadius : 10,
+        marginRight : 10,
+        backgroundColor:'#FB975D',
+        borderColor : '#FB975D'
+    },
+    buttonSizeText :{
+        color : '#000',
+        fontWeight : 'bold',
+        fontSize: 15,
+    },
+    buttonSizeTextActive:{
+       color: '#fff',
+    },
+    colorContainer :{
+        width : '100%',
+        paddingVertical: 20,
+
+    },
+    colorTitle :{
+        color: '#000',
+        fontWeight : 'bold',
+        fontSize : 16,
+    },
+    ColorList :{
+        marginVertical : 30,
+        flexDirection: 'row'
+    },
+    ColorButton :{
+        width:25,
+        height : 25,
+        alignItems:'center',
+        justifyContent : 'center',
+        borderRadius : 7,
+        marginRight : 7
+    },
+    bottomContainer :{
+        flexDirection:'row',
+        justifyContent : 'space-between'
+    },
     bottomPrice :{},
-    AddCart :{},
+    AddCart :{
+        backgroundColor: '#000',
+        paddingVertical : 10,
+        paddingHorizontal:15,
+    },
     AddCartText :{},
 
 })
