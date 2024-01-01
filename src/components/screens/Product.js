@@ -94,9 +94,12 @@ export default function Product({route,navigation}) {
             </View>
             <View style={styles.colorContainer}>
                 <Text style={styles.colorTitle}>Select Color</Text>
-                    {colorData.map((item)=>(
-                        <TouchableOpacity style={[styles.ColorButton,{backgroundColor:item.color}]} ></TouchableOpacity>
-                    ))}
+                    <View style={styles.ColorList}>
+                        {colorData.map((item)=>(
+                            <TouchableOpacity key={item.id} style={[styles.ColorButton,{backgroundColor:item.color}]} ></TouchableOpacity>
+                        ))}
+                    </View>
+
                     {/* <FlatList
                     contentContainerStyle={styles.ColorList}
                     data={colorData}
@@ -111,7 +114,9 @@ export default function Product({route,navigation}) {
                     <Text style={styles.AddCartText}>Add  to cart</Text>
                 </TouchableOpacity>
             </View>
+           
         </ScrollView>
+
     </SafeAreaView>
   )
 }
@@ -119,9 +124,9 @@ export default function Product({route,navigation}) {
 const styles = StyleSheet.create({
     Main :{
         width,
-        height,
         alignItems:'center',
-        padding:20
+        padding:20,
+        
 
     },
     navContainer:{
@@ -141,6 +146,7 @@ const styles = StyleSheet.create({
         fontSize:22,
         fontWeight:'bold',
         color:'#000',
+        textAlign: 'center'
 
     },
     price :{
@@ -148,6 +154,8 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
         color:'#000',
         marginVertical:10,
+        textAlign: 'center'
+
     },
     image :{
         width: imageWidth,
@@ -223,14 +231,26 @@ const styles = StyleSheet.create({
     },
     bottomContainer :{
         flexDirection:'row',
-        justifyContent : 'space-between'
+        justifyContent : 'space-between',
+        marginBottom : 50,
+        alignItems: 'center'
+
     },
-    bottomPrice :{},
+    bottomPrice :{
+        color : '#000',
+        fontSize: 22,
+        fontWeight: '600'
+    },
     AddCart :{
         backgroundColor: '#000',
-        paddingVertical : 10,
-        paddingHorizontal:15,
+        paddingVertical : 15,
+        paddingHorizontal:40,
+        borderRadius : 14
     },
-    AddCartText :{},
+    AddCartText :{
+        color: '#fff',
+        fontSize:18,
+        fontWeight:'500'
+    },
 
 })
