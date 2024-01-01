@@ -1,5 +1,5 @@
 import { Dimensions, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Arrow from '../../assets/Assets/arrow.svg'
 import Heart from '../../assets/Assets/heart.svg'
@@ -7,8 +7,11 @@ import Heart from '../../assets/Assets/heart.svg'
 
 const {width,height} = Dimensions.get('screen')
 imageWidth = Math.round(width-40)
+
 export default function Product({route,navigation}) {
     const {item} = route.params
+    const [tab, setTab]=useState(1)
+    const [colorTab, setColorTab]=useState(0)
 
     const addCart = async () => {
         try {
@@ -52,12 +55,39 @@ export default function Product({route,navigation}) {
             id :6,
             color:'#FED6DF'
         },
-
       ]
+      sizeData=[
+        {
+            id :1,
+            size:'S'
+        },
+        {
+            id :2,
+            size:'M'
+        },
+        {
+            id :3,
+            size:'L'
+        },
+        {
+            id :4,
+            size:'XL'
+        },
+        {
+            id :5,
+            size:'XXL'
+        },
+      ]
+        
+      
   return (
     <SafeAreaView style={styles.Main}>
         <View style={styles.navContainer}>
-            <TouchableOpacity style={styles.navButtons} activeOpacity={.8}>
+            <TouchableOpacity 
+                onPress={()=>navigation.goBack()}
+                style={styles.navButtons} 
+                activeOpacity={.8}
+            >
                 <Arrow  width={35} height={35} />
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={.8}>
@@ -75,40 +105,31 @@ export default function Product({route,navigation}) {
             <View style={styles.sizeContainer}>
                 <Text style={styles.sizeTitle}>Select Size</Text>
                 <View style={styles.sizeList}>
-                    <TouchableOpacity activeOpacity={.6} style={styles.sizeButtonActive} >
-                        <Text style={styles.buttonSizeTextActive}>S</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sizeButton} >
-                        <Text style={styles.buttonSizeText}>M</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sizeButton} >
-                        <Text style={styles.buttonSizeText}>L</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sizeButton} >
-                        <Text style={styles.buttonSizeText}>XL</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sizeButton} >
-                        <Text style={styles.buttonSizeText}>XXL</Text>
-                    </TouchableOpacity>
+                    {sizeData.map((item)=>(
+                        <TouchableOpacity key={item.id} onPress={()=>setTab(item.id)} activeOpacity={.6} style={tab==item.id?styles.sizeButtonActive :styles.sizeButton} >
+                            <Text style={tab==item.id ?styles.buttonSizeTextActive :styles.buttonSizeText}>{item.size}</Text>
+                        </TouchableOpacity>
+                    ))}
+
                 </View>
             </View>
             <View style={styles.colorContainer}>
                 <Text style={styles.colorTitle}>Select Color</Text>
                     <View style={styles.ColorList}>
                         {colorData.map((item)=>(
-                            <TouchableOpacity key={item.id} style={[styles.ColorButton,{backgroundColor:item.color}]} ></TouchableOpacity>
+                            <TouchableOpacity 
+                            key={item.id} 
+                            onPress={()=>setColorTab(item.id)} 
+                            style={[styles.ColorButton,
+                                {backgroundColor:item.color},
+                                colorTab==item.id
+                                ?{borderColor:'#FB975D',borderWidth:1}
+                                :{borderColor:item.color,borderWidth:1}]} 
+                            ></TouchableOpacity>
                         ))}
                     </View>
-
-                    {/* <FlatList
-                    contentContainerStyle={styles.ColorList}
-                    data={colorData}
-                    renderItem={({item})=>(
-                        <TouchableOpacity style={[styles.ColorButton,{backgroundColor:item.color}]} ></TouchableOpacity>
-                    )}
-                    /> */}
             </View>
-            <View style={styles.bottomContainer}>
+            <View style={styles.bottomContainer} >
                 <Text style={styles.bottomPrice}>${item.price}</Text>
                 <TouchableOpacity activeOpacity={.8}  style={styles.AddCart} onPress={addCart}>
                     <Text style={styles.AddCartText}>Add  to cart</Text>
