@@ -4,7 +4,7 @@ import Carousel,{Pagination} from 'react-native-snap-carousel';
 
 const {width, height}= Dimensions.get('screen')
 
-export default function Main() {
+export default function Main({navigation}) {
     const [data,setData]= useState([])
     const [index, setIndex] = useState(2);  
 
@@ -69,9 +69,9 @@ export default function Main() {
   const isCarousal =useRef(null);
 
   const render_items=({item})=>(
-    <View style={styles.sliderContainer}>
+    <TouchableOpacity onPress={()=>navigation.navigate('Product',{item})} style={styles.sliderContainer}>
         <Image style={styles.sliderImage} source={item.image} />
-    </View>
+    </TouchableOpacity>
   )
 
   return (
