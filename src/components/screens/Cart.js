@@ -10,7 +10,8 @@ import Tag from '../../assets/Assets/tag.svg'
 
 
 const {width,height}= Dimensions.get('screen')
-export default function Cart() {
+
+export default function Cart({navigation}) {
     const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
@@ -36,7 +37,7 @@ export default function Cart() {
   return (
     <SafeAreaView style={styles.Main}>
         <View style={styles.NavContainer}>
-            <TouchableOpacity style={styles.NavButton}>
+            <TouchableOpacity onPress={()=>navigation.goBack()} style={styles.NavButton}>
                 <Arrow width={35} height={35} />
             </TouchableOpacity>
             <Text style={styles.NavText}>My Cart</Text>
@@ -178,7 +179,7 @@ export default function Cart() {
                     <Text style={styles.priceTitle}>Total</Text>
                     <Text style={styles.price}>$ 250.54</Text>
                 </View>
-                <TouchableOpacity style={styles.checkoutButton}>
+                <TouchableOpacity onPress={()=>navigation.navigate('Payment')} style={styles.checkoutButton}>
                     <Text style={styles.checkoutText}>Checkout</Text>
                 </TouchableOpacity>
             </View>
@@ -345,5 +346,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingVertical : 20
        },
-       checkoutText:{},
+       checkoutText:{
+        color : '#fff',
+        fontSize : 20
+       },
 })

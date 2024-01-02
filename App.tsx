@@ -8,6 +8,7 @@ import Main from './src/components/screens/Main';
 import Sample from './src/components/screens/Sample';
 import Product from './src/components/screens/Product';
 import Cart from './src/components/screens/Cart';
+import Payment from './src/components/screens/Payment';
 
 export default function App() {
 
@@ -22,12 +23,13 @@ export default function App() {
           screenOptions={
             {headerShown : false}
           }
-          initialRouteName='Cart'
+          initialRouteName='SignUpPage'
         >
             <Stack.Screen name='SignUp' component={SignUpPage}  />
             <Stack.Screen name='Main' component={Main}  />
             <Stack.Screen name='Product' component={Product}  />
             <Stack.Screen name='Cart' component={Cart}  />
+            <Stack.Screen name='Payment' component={Payment}  />
         </Stack.Navigator>
 
     </NavigationContainer>

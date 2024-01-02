@@ -25,6 +25,7 @@ export default function Product({route,navigation}) {
           console.error('Error adding item to cart:', error);
         }
         console.log(await AsyncStorage.getItem('items'))
+        navigation.navigate('Cart')
       };
       const colorData = [
         {
