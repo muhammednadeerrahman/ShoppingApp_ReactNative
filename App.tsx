@@ -23,7 +23,7 @@ export default function App() {
           screenOptions={
             {headerShown : false}
           }
-          initialRouteName='SignUpPage'
+          initialRouteName='Payment'
         >
             <Stack.Screen name='SignUp' component={SignUpPage}  />
             <Stack.Screen name='Main' component={Main}  />
