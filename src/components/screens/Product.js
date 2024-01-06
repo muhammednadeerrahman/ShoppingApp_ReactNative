@@ -1,5 +1,5 @@
 import { Dimensions, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Arrow from '../../assets/Assets/arrow.svg'
 import Heart from '../../assets/Assets/heart.svg'
@@ -14,18 +14,32 @@ export default function Product({route,navigation}) {
     const [colorTab, setColorTab]=useState(0)
 
     const addCart = async () => {
+        const details = {
+            id : `${item.id+size+color} `,
+            style: item.style,
+            name : item.name,
+            image : item.image,
+            size : size,
+            color: color,
+            price : item.price,
+            quantity : 1
+        }
+        console.log(details)
+        //  AsyncStorage.clear()
+
         try {
           const storedItems = await AsyncStorage.getItem('items');
     
           let itemsArray = storedItems ? JSON.parse(storedItems) : [];
     
-          await AsyncStorage.setItem('items', JSON.stringify([...itemsArray, item]));
+          await AsyncStorage.setItem('items', JSON.stringify([...itemsArray, details]));
+          console.log(await AsyncStorage.getItem('items'))
+          navigation.navigate('Cart')
           
         } catch (error) {
           console.error('Error adding item to cart:', error);
         }
-        console.log(await AsyncStorage.getItem('items'))
-        navigation.navigate('Cart')
+
       };
       const colorData = [
         {
@@ -79,10 +93,43 @@ export default function Product({route,navigation}) {
             size:'XXL'
         },
       ]
+    
+    const [size,setSize] =useState('s')
+    const [color,setColor] =useState('#fff')
+    // const [details,setDetails] = useState({
+    //     id : `${item.id}+${size}+${color} `,
+    //     style: item.style,
+    //     name : item.name,
+    //     image : item.image,
+    //     size : null,
+    //     color: null,
+    //     price : item.price
+    // })
+
+    const updateSize = (data)=>{
+        if (data) {
+            setTab(data.id)
+            setSize(data.size)
+            console.log(size,) 
+        }
+        else{
+            setSize('s')
+            console.log(size) 
+        }
+
+    }
+    const updateColor = (data)=>{
+        if (data) {
+            setColorTab(data.id)
+            setColor(data.color)
+        }
+        else{
+            setColor('#fff')            
+        }
+
+    }
 
     
-        
-      
   return (
     <SafeAreaView style={styles.Main}>
         <View style={styles.navContainer}>
@@ -108,21 +155,24 @@ export default function Product({route,navigation}) {
             <View style={styles.sizeContainer}>
                 <Text style={styles.sizeTitle}>Select Size</Text>
                 <View style={styles.sizeList}>
-                    {sizeData.map((item)=>(
-                        <TouchableOpacity key={item.id} onPress={()=>setTab(item.id)} activeOpacity={.6} style={tab==item.id?styles.sizeButtonActive :styles.sizeButton} >
-                            <Text style={tab==item.id ?styles.buttonSizeTextActive :styles.buttonSizeText}>{item.size}</Text>
+                    {sizeData.map((data)=>(
+                        <TouchableOpacity key={data.id} onPress={()=>{updateSize(data)}} activeOpacity={.6} style={tab==data.id?styles.sizeButtonActive :styles.sizeButton}>
+                            <Text style={tab==data.id ?styles.buttonSizeTextActive :styles.buttonSizeText}>{data.size}</Text>
+                            
                         </TouchableOpacity>
+                        
                     ))}
 
                 </View>
             </View>
+            <Text style={styles.sizeTitle}>{size}{color}</Text>
             <View style={styles.colorContainer}>
                 <Text style={styles.colorTitle}>Select Color</Text>
                     <View style={styles.ColorList}>
                         {colorData.map((item)=>(
                             <TouchableOpacity 
                             key={item.id} 
-                            onPress={()=>setColorTab(item.id)} 
+                            onPress={()=>updateColor(item) }
                             style={[styles.ColorButton,
                                 {backgroundColor:item.color},
                                 colorTab==item.id
@@ -135,7 +185,7 @@ export default function Product({route,navigation}) {
             <View style={styles.bottomContainer} >
                 <Text style={styles.bottomPrice}>${item.price}</Text>
                 <TouchableOpacity activeOpacity={.8}  style={styles.AddCart} onPress={addCart}>
-                    <Text style={styles.AddCartText}>Add  to cart</Text>
+                    <Text style={styles.AddCartText}>Add to cart</Text>
                 </TouchableOpacity>
             </View>
            

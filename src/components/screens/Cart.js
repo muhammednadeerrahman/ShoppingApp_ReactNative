@@ -1,4 +1,4 @@
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View,Image, ScrollView } from 'react-native'
+import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View,Image, ScrollView, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Arrow from '../../assets/Assets/arrow.svg'
@@ -13,27 +13,26 @@ const {width,height}= Dimensions.get('screen')
 
 export default function Cart({navigation}) {
     const [cartItems, setCartItems] = useState([]);
-
     useEffect(() => {
-      const fetchCartItems = async () => {
-        try {
-          // Retrieve items from AsyncStorage
-          const storedItems = await AsyncStorage.getItem('items');
-          
-          // Parse the stored items or initialize as an empty array
-          const itemsArray = storedItems ? JSON.parse(storedItems) : [];
-  
-          // Update state with the retrieved items
-          setCartItems(itemsArray);
-        } catch (error) {
-          console.error('Error fetching cart items:', error);
-        }
-      };
-  
-      // Call the function to fetch cart items
-      fetchCartItems();
-      console.log(cartItems)
+        const fetchData = async () => {
+            const itemsArray = await fetchCartItems();
+            setCartItems(itemsArray);
+        };
+    
+        fetchData();
     }, []);
+    
+    const fetchCartItems = async () => {
+        try {
+            const storedItems = await AsyncStorage.getItem('items');
+            const itemsArray = storedItems ? JSON.parse(storedItems) : [];
+            return itemsArray;
+        } catch (error) {
+            console.error('Error fetching cart items:', error);
+            return [];
+        }
+    };
+    
   return (
     <SafeAreaView style={styles.Main}>
         <View style={styles.NavContainer}>
@@ -49,28 +48,29 @@ export default function Cart({navigation}) {
                 <Text style={styles.emptyTitle}>Hey,it feels so light !</Text>
                 <Text style={styles.emptySub}>there is nothing in your cart.Let's add some items.</Text>
         </View> */}
-        <ScrollView 
+        <FlatList 
         contentContainerStyle={{width:'100%', minHeight : height}}
         showsVerticalScrollIndicator={false}
-        >
+        data={cartItems}
         
-            <View style={styles.productContainer}>
+        renderItem={({item})=>(
+            <View key={item.id} style={styles.productContainer}>
                 <View style={styles.imageContainer}>
-                    <Image style={styles.productImage} source={require('../../assets/images/blueDress.png')} />
+                    <Image style={styles.productImage} source={item.image} />
                 </View>
                 <View style={styles.productDetails}>
-                    <Text style={styles.productName}>Beach Crochet Lace</Text>
-                    <Text style={styles.productSize}>Size : M</Text>
+                    <Text style={styles.productName}>{item.name}</Text>
+                    <Text style={styles.productSize}>Size : {item.size}</Text>
                     <View style={styles.priceBox}>
                         <Text style={styles.dollar}>$ </Text>
-                        <Text style={styles.productPrice}>145.4</Text>
+                        <Text style={styles.productPrice}>{item.price}</Text>
                     </View>
                     <View style={styles.prodBottomContainer}>
                         <View style={styles.prodButtonContainer}>
                             <TouchableOpacity style={styles.changeButton}>
                                 <Minus width={25} height={25} />
                             </TouchableOpacity>
-                            <Text style={styles.quantity}>1</Text>
+                            <Text style={styles.quantity}>{item.quantity}</Text>
                             <TouchableOpacity style={styles.changeButton}>
                                 <Plus width={25} height={25} />
                             </TouchableOpacity>
@@ -81,6 +81,10 @@ export default function Cart({navigation}) {
                     </View>
                 </View>
             </View>
+        )}
+        />
+        
+            
             <View style={styles.productContainer}>
                 <View style={styles.imageContainer}>
                     <Image style={styles.productImage} source={require('../../assets/images/pinkTshirt.png')} />
@@ -108,7 +112,7 @@ export default function Cart({navigation}) {
                     </View>
                 </View>
             </View>
-            <View style={styles.productContainer}>
+            {/* <View style={styles.productContainer}>
                 <View style={styles.imageContainer}>
                     <Image style={styles.productImage} source={require('../../assets/images/blueDress.png')} />
                 </View>
@@ -161,7 +165,7 @@ export default function Cart({navigation}) {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            </View> */}
             <View style={styles.checkoutContainer}>
                 <TouchableOpacity style={styles.promoContainer}>
                     <Text style={styles.promo}>Promo/student Code or Vouchers</Text>
@@ -179,11 +183,10 @@ export default function Cart({navigation}) {
                     <Text style={styles.priceTitle}>Total</Text>
                     <Text style={styles.price}>$ 250.54</Text>
                 </View>
-                <TouchableOpacity onPress={()=>navigation.navigate('Payment')} style={styles.checkoutButton}>
+                <TouchableOpacity onPress={async()=>console.log(await AsyncStorage.getItem('items'))} style={styles.checkoutButton}>
                     <Text style={styles.checkoutText}>Checkout</Text>
                 </TouchableOpacity>
             </View>
-        </ScrollView>
     </SafeAreaView>
   )
 }

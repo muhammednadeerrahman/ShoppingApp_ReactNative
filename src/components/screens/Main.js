@@ -110,7 +110,7 @@ export default function Main({navigation}) {
           <TouchableOpacity style={styles.NavRightButton}>
             <Search width={25} height={25} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.NavRightButton}>
+          <TouchableOpacity style={styles.NavRightButton} onPress={()=>navigation.navigate('Cart')}>
             <Cart width={25} height={25} />
           </TouchableOpacity>
         </View>
