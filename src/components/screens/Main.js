@@ -9,7 +9,10 @@ const {width, height}= Dimensions.get('screen')
 
 export default function Main({navigation}) {
     const [data,setData]= useState([])
-    const [index, setIndex] = useState(2);  
+    const [index, setIndex] = useState(2); 
+    const [active,setActive]= useState(1)
+    const [category,setCategory]=useState('women')
+    const [filtered,setFiltered] = useState([])
 
 
     useEffect(()=>{
@@ -78,20 +81,21 @@ export default function Main({navigation}) {
               price : 251.85,
               category : 'winter'
             }
-          ])
+          ]);
 
 
-    },[])
+
+    },[category])
     
 
   const isCarousal =useRef(null);
   
   const render_items=({item})=>(
-    <TouchableOpacity onPress={()=>navigation.navigate('Product',{item})} style={styles.sliderContainer}>
-        <Image style={styles.sliderImage} source={item.image} />
-        <Text style={styles.productName}>{item.style} {item.name}</Text>
-        <Text style={styles.productPrice}>$ {item.price}</Text>
-    </TouchableOpacity>
+       <TouchableOpacity onPress={()=>navigation.navigate('Product',{item})} style={styles.sliderContainer}>
+          <Image style={styles.sliderImage} source={item.image} />
+          <Text style={styles.productName}>{item.style} {item.name}</Text>
+          <Text style={styles.productPrice}>$ {item.price}</Text>
+        </TouchableOpacity>
   )
 
   return (
@@ -117,29 +121,29 @@ export default function Main({navigation}) {
         <Image style={styles.titleImage} source={require('../../assets/Assets/vector.png')} />
       </View>
       <View style={styles.Route}>
-        <TouchableOpacity style={styles.routerButton}>
-           <Text style={styles.ButtonText}>All</Text>
+        <TouchableOpacity onPress={()=>{setActive(1),setCategory()}} style={active==1?styles.routerButtonActive:styles.routerButton}>
+           <Text style={active==1?styles.ButtonTextActive:styles.ButtonText}>All</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.routerButton}>
-           <Text style={styles.ButtonText}>Winter</Text>
+        <TouchableOpacity onPress={()=>{setActive(2),setCategory('winter')}} style={active==2?styles.routerButtonActive:styles.routerButton}>
+           <Text style={active==2?styles.ButtonTextActive:styles.ButtonText}>Winter</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.routerButton}>
-           <Text style={styles.ButtonText}>Women</Text>
+        <TouchableOpacity onPress={()=>{setActive(3),setCategory('women')}} style={active==3?styles.routerButtonActive:styles.routerButton} >
+           <Text style={active==3?styles.ButtonTextActive:styles.ButtonText}>Women</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.routerButton}>
-           <Text style={styles.ButtonText}>EyeWear</Text>
+        <TouchableOpacity onPress={()=>{setActive(4),setCategory('eyeWear')}} style={active==4?styles.routerButtonActive:styles.routerButton} >
+           <Text style={active==4?styles.ButtonTextActive:styles.ButtonText}>EyeWear</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.SliderHor}>
         <Carousel 
           ref= {isCarousal}
-          data={data}
+          data={category? data.filter((item)=>item.category===category):data}
           renderItem = {render_items}
           sliderWidth = {width}
           itemWidth = {width*.4}
           layout={'default'} 
           inactiveSlideScale = {.7}  
-          firstItem={index}
+          // firstItem={}
           vertical={false}
           enableSnap={true}
           loop={true}  
@@ -151,7 +155,7 @@ export default function Main({navigation}) {
           <Text style={styles.popularSee}>See All</Text>
         </View>
         <FlatList       
-          data={data}
+          data={category? data.filter((item)=>item.category===category):data}
           renderItem={({item})=>(
             <TouchableOpacity onPress={()=>navigation.navigate('Product',{item})} style={styles.item}>
               <Image style={styles.PopularImage} source={item.image} />
@@ -224,8 +228,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: '#a6a6a6',
   },
+  routerButtonActive: {
+    marginHorizontal: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderWidth: 0,
+    borderRadius: 8,
+    backgroundColor: '#000'
+  },
   ButtonText: {
     color : '#000',
+    fontSize: 16,
+    fontWeight: '600'
+  },
+  ButtonTextActive:{
+    color : '#fff',
     fontSize: 16,
     fontWeight: '600'
   },
@@ -254,14 +271,16 @@ const styles = StyleSheet.create({
     fontWeight : '600'
   },
   popularContainer:{
-    padding: 20,
-    width:'100%',
+    width,
+    alignItems:'center',
     flex:1,
+    padding:10
   },
   popularTitleContainer :{
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width:'100%',
+    width:width-20,
+    padding:10,
     marginBottom: 20,
     
    
@@ -278,13 +297,14 @@ const styles = StyleSheet.create({
   },
   popularList : {
     justifyContent: 'space-between',
-    width:'100%',
-    minHeight:height,
-    alignItems: 'center'
+    alignItems: 'center',
+    width:width-20
+
   },
   item : {
-    width: '50%',
-    padding : 10
+    width: width*.5 - 10,
+    padding : 10,
+    
 
   },
   PopularImage : {

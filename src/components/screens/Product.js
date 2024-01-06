@@ -79,6 +79,8 @@ export default function Product({route,navigation}) {
             size:'XXL'
         },
       ]
+
+    
         
       
   return (
@@ -99,7 +101,7 @@ export default function Product({route,navigation}) {
             showsVerticalScrollIndicator={false} 
             contentContainerStyle={styles.scrollContainer}
         >
-            <Text style={styles.title}>Beach Cochet Lace</Text>
+            <Text style={styles.title}>{item.style} {item.name}</Text>
             <Text style={styles.price}>${item.price}</Text>
             <Image style={styles.image} source={item.image}  />
             
