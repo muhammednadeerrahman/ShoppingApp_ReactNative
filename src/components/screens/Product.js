@@ -22,20 +22,33 @@ export default function Product({route,navigation}) {
             size : size,
             color: color,
             price : item.price,
+            prodPrice : item.price,
             quantity : 1
         }
-        console.log(details)
+        // console.log(details)
         //  AsyncStorage.clear()
+        //   AsyncStorage.clear()
 
-        try {
-          const storedItems = await AsyncStorage.getItem('items');
-    
-          let itemsArray = storedItems ? JSON.parse(storedItems) : [];
-    
-          await AsyncStorage.setItem('items', JSON.stringify([...itemsArray, details]));
-          console.log(await AsyncStorage.getItem('items'))
-          navigation.navigate('Cart')
-          
+         try {
+            const storedItems = await AsyncStorage.getItem('items');
+            let itemsArray = storedItems ? JSON.parse(storedItems) : [];
+        
+            const existingItem = itemsArray.find((item) => item.id === details.id);
+        
+            if (existingItem != undefined) {
+                existingItem.quantity += 1;
+                existingItem.price = existingItem.quantity *  existingItem.prodPrice
+                
+                await AsyncStorage.setItem('items', JSON.stringify(itemsArray));
+                console.log(await AsyncStorage.getItem('items'));
+                navigation.navigate('Cart');
+            } else {
+                await AsyncStorage.setItem('items', JSON.stringify([...itemsArray, details]));
+                console.log(await AsyncStorage.getItem('items'));
+                navigation.navigate('Cart');
+            }
+        
+           
         } catch (error) {
           console.error('Error adding item to cart:', error);
         }

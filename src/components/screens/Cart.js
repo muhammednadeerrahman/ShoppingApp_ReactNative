@@ -12,27 +12,106 @@ import Tag from '../../assets/Assets/tag.svg'
 const {width,height}= Dimensions.get('screen')
 
 export default function Cart({navigation}) {
+
+
     const [cartItems, setCartItems] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [shippingCost, setShippingCost] = useState(0);
+    const [payAmount, setPayAmount] = useState(0);
+
+
+   
     useEffect(() => {
-        const fetchData = async () => {
-            const itemsArray = await fetchCartItems();
-            setCartItems(itemsArray);
-        };
-    
-        fetchData();
-    }, []);
-    
-    const fetchCartItems = async () => {
-        try {
-            const storedItems = await AsyncStorage.getItem('items');
-            const itemsArray = storedItems ? JSON.parse(storedItems) : [];
-            return itemsArray;
-        } catch (error) {
-            console.error('Error fetching cart items:', error);
-            return [];
+        console.log(cartItems)
+        fetchItems();
+        console.log(cartItems)
+        totalPrice()
+
+    }, [setCartItems]);
+
+    const fetchItems = async()=>{
+        try{
+            const storedItems = await AsyncStorage.getItem('items')
+            const itemsArray = storedItems ? JSON.parse(storedItems):[]
+            setCartItems(itemsArray)
+            console.log(itemsArray,'hello')
+
         }
-    };
+        catch(error){
+            console.error('Error fetching cart items:', error);
+        }
+    }
+
+    const quantitydecrement = async(item)=>{
+
+        const listItems = await AsyncStorage.getItem('items')
+        const listArray = listItems ? JSON.parse(listItems) : []
+        
+
+       const quantityUpdate =  listArray.find((data)=>data.id== item.id)
+       if (quantityUpdate.quantity !==1){
+        quantityUpdate.quantity = quantityUpdate.quantity - 1
+        quantityUpdate.price = quantityUpdate.quantity * quantityUpdate.prodPrice
+        await totalPrice()
+       }
+       else{
+        quantityUpdate.quantity = 1
+        quantityUpdate.price = quantityUpdate.prodPrice
+       } 
+       await AsyncStorage.setItem('items', JSON.stringify(listArray));
+       await totalPrice()
+       await fetchItems()
+
+
+    }
     
+    const quantityIncrement= async (item)=>{
+        const listItems = await AsyncStorage.getItem('items')
+        const listArray = listItems ? JSON.parse(listItems) : []
+        
+       const quantityUpdate =  listArray.find((data)=>data.id== item.id)
+       if (quantityUpdate){
+        quantityUpdate.quantity = quantityUpdate.quantity + 1
+        quantityUpdate.price = quantityUpdate.quantity * quantityUpdate.prodPrice
+
+       }
+
+       await AsyncStorage.setItem('items', JSON.stringify(listArray));
+       await fetchItems()
+       await totalPrice()
+
+    }
+
+    const totalPrice = async ()=>{
+        let amount = 0
+        
+        const storedItems = await AsyncStorage.getItem('items')
+        const itemsArray = storedItems ? JSON.parse(storedItems):[]
+        itemsArray.map((price)=>(
+            amount += price.price
+        ))
+        let totalAmount = Number(amount.toFixed(2))
+        setTotal(totalAmount)
+
+        let updatedShippingCost = totalAmount !== 0 ? 20.9 : 0
+        setShippingCost(updatedShippingCost)
+
+        let finalPrice = Number((totalAmount + updatedShippingCost).toFixed(2))
+        setPayAmount(finalPrice)
+    }
+
+    deleteItem = async(item) =>{
+        const storedItems = await AsyncStorage.getItem('items')
+        const itemsArray = storedItems ? JSON.parse(storedItems):[]
+        const newItems = itemsArray.filter((product)=>product.id != item.id)
+        await AsyncStorage.setItem('items',JSON.stringify(newItems))
+
+        await fetchItems()
+        await totalPrice()
+
+    }
+
+   
   return (
     <SafeAreaView style={styles.Main}>
         <View style={styles.NavContainer}>
@@ -49,12 +128,12 @@ export default function Cart({navigation}) {
                 <Text style={styles.emptySub}>there is nothing in your cart.Let's add some items.</Text>
         </View> */}
         <FlatList 
-        contentContainerStyle={{width:'100%', minHeight : height}}
+        contentContainerStyle={styles.productItems}
         showsVerticalScrollIndicator={false}
         data={cartItems}
         
         renderItem={({item})=>(
-            <View key={item.id} style={styles.productContainer}>
+            <View  style={styles.productContainer}>
                 <View style={styles.imageContainer}>
                     <Image style={styles.productImage} source={item.image} />
                 </View>
@@ -67,15 +146,15 @@ export default function Cart({navigation}) {
                     </View>
                     <View style={styles.prodBottomContainer}>
                         <View style={styles.prodButtonContainer}>
-                            <TouchableOpacity style={styles.changeButton}>
+                            <TouchableOpacity style={styles.changeButton} onPress={()=>quantitydecrement(item)}>
                                 <Minus width={25} height={25} />
                             </TouchableOpacity>
                             <Text style={styles.quantity}>{item.quantity}</Text>
-                            <TouchableOpacity style={styles.changeButton}>
+                            <TouchableOpacity style={styles.changeButton} onPress={()=>quantityIncrement(item)}>
                                 <Plus width={25} height={25} />
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={styles.deleteButton}>
+                        <TouchableOpacity style={styles.deleteButton} onPress={()=>deleteItem(item)}>
                             <Close width={25} height={25} />
                         </TouchableOpacity>
                     </View>
@@ -84,109 +163,27 @@ export default function Cart({navigation}) {
         )}
         />
         
-            
-            <View style={styles.productContainer}>
-                <View style={styles.imageContainer}>
-                    <Image style={styles.productImage} source={require('../../assets/images/pinkTshirt.png')} />
-                </View>
-                <View style={styles.productDetails}>
-                    <Text style={styles.productName}>Beach Crochet Lace</Text>
-                    <Text style={styles.productSize}>Size : M</Text>
-                    <View style={styles.priceBox}>
-                        <Text style={styles.dollar}>$ </Text>
-                        <Text style={styles.productPrice}>145.4</Text>
-                    </View>
-                    <View style={styles.prodBottomContainer}>
-                        <View style={styles.prodButtonContainer}>
-                            <TouchableOpacity style={styles.changeButton}>
-                                <Minus width={25} height={25} />
-                            </TouchableOpacity>
-                            <Text style={styles.quantity}>1</Text>
-                            <TouchableOpacity style={styles.changeButton}>
-                                <Plus width={25} height={25} />
-                            </TouchableOpacity>
-                        </View>
-                        <TouchableOpacity style={styles.deleteButton}>
-                            <Close width={25} height={25} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+        <View style={styles.checkoutContainer}>
+            <TouchableOpacity style={styles.promoContainer}>
+                <Text style={styles.promo}>Promo/student Code or Vouchers</Text>
+                <Tag width={25} height={25} />
+            </TouchableOpacity>
+            <View style={styles.priceContainer}>
+                <Text style={styles.priceTitle}>Sub Total</Text>
+                <Text style={styles.price}>$ {total}</Text>
             </View>
-            {/* <View style={styles.productContainer}>
-                <View style={styles.imageContainer}>
-                    <Image style={styles.productImage} source={require('../../assets/images/blueDress.png')} />
-                </View>
-                <View style={styles.productDetails}>
-                    <Text style={styles.productName}>Beach Crochet Lace</Text>
-                    <Text style={styles.productSize}>Size : M</Text>
-                    <View style={styles.priceBox}>
-                        <Text style={styles.dollar}>$ </Text>
-                        <Text style={styles.productPrice}>145.4</Text>
-                    </View>
-                    <View style={styles.prodBottomContainer}>
-                        <View style={styles.prodButtonContainer}>
-                            <TouchableOpacity style={styles.changeButton}>
-                                <Minus width={25} height={25} />
-                            </TouchableOpacity>
-                            <Text style={styles.quantity}>1</Text>
-                            <TouchableOpacity style={styles.changeButton}>
-                                <Plus width={25} height={25} />
-                            </TouchableOpacity>
-                        </View>
-                        <TouchableOpacity style={styles.deleteButton}>
-                            <Close width={25} height={25} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
+            <View style={styles.priceContainer}>
+                <Text style={styles.priceTitle}>Shipping</Text>
+                <Text style={styles.price}>$ {shippingCost}</Text>
             </View>
-            <View style={styles.productContainer}>
-                <View style={styles.imageContainer}>
-                    <Image style={styles.productImage} source={require('../../assets/images/blueDress.png')} />
-                </View>
-                <View style={styles.productDetails}>
-                    <Text style={styles.productName}>Beach Crochet Lace</Text>
-                    <Text style={styles.productSize}>Size : M</Text>
-                    <View style={styles.priceBox}>
-                        <Text style={styles.dollar}>$ </Text>
-                        <Text style={styles.productPrice}>145.4</Text>
-                    </View>
-                    <View style={styles.prodBottomContainer}>
-                        <View style={styles.prodButtonContainer}>
-                            <TouchableOpacity style={styles.changeButton}>
-                                <Minus width={25} height={25} />
-                            </TouchableOpacity>
-                            <Text style={styles.quantity}>1</Text>
-                            <TouchableOpacity style={styles.changeButton}>
-                                <Plus width={25} height={25} />
-                            </TouchableOpacity>
-                        </View>
-                        <TouchableOpacity style={styles.deleteButton}>
-                            <Close width={25} height={25} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View> */}
-            <View style={styles.checkoutContainer}>
-                <TouchableOpacity style={styles.promoContainer}>
-                    <Text style={styles.promo}>Promo/student Code or Vouchers</Text>
-                    <Tag width={25} height={25} />
-                </TouchableOpacity>
-                <View style={styles.priceContainer}>
-                    <Text style={styles.priceTitle}>Sub Total</Text>
-                    <Text style={styles.price}>$ 250.54</Text>
-                </View>
-                <View style={styles.priceContainer}>
-                    <Text style={styles.priceTitle}>Shipping</Text>
-                    <Text style={styles.price}>$ 250.54</Text>
-                </View>
-                <View style={styles.TotalContainer}>
-                    <Text style={styles.priceTitle}>Total</Text>
-                    <Text style={styles.price}>$ 250.54</Text>
-                </View>
-                <TouchableOpacity onPress={async()=>console.log(await AsyncStorage.getItem('items'))} style={styles.checkoutButton}>
-                    <Text style={styles.checkoutText}>Checkout</Text>
-                </TouchableOpacity>
+            <View style={styles.TotalContainer}>
+                <Text style={styles.priceTitle}>Total</Text>
+                <Text style={styles.price}>$ {payAmount}</Text>
             </View>
+            <TouchableOpacity onPress={async()=>console.log(cartItems)} style={styles.checkoutButton}>
+                <Text style={styles.checkoutText}>Checkout</Text>
+            </TouchableOpacity>
+        </View>
     </SafeAreaView>
   )
 }
@@ -230,6 +227,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize : 16
 
+    },
+    productItems:{
+        width:width-40,
+        minHeight : width
     },
     productContainer:{
         flexDirection : 'row',
