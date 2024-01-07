@@ -34,7 +34,7 @@ export default function Cart({navigation}) {
             const storedItems = await AsyncStorage.getItem('items')
             const itemsArray = storedItems ? JSON.parse(storedItems):[]
             setCartItems(itemsArray)
-            console.log(itemsArray,'hello')
+            console.log(itemsArray)
 
         }
         catch(error){
@@ -61,8 +61,6 @@ export default function Cart({navigation}) {
        await AsyncStorage.setItem('items', JSON.stringify(listArray));
        await totalPrice()
        await fetchItems()
-
-
     }
     
     const quantityIncrement= async (item)=>{
@@ -75,16 +73,13 @@ export default function Cart({navigation}) {
         quantityUpdate.price = quantityUpdate.quantity * quantityUpdate.prodPrice
 
        }
-
        await AsyncStorage.setItem('items', JSON.stringify(listArray));
        await fetchItems()
        await totalPrice()
-
     }
 
     const totalPrice = async ()=>{
         let amount = 0
-        
         const storedItems = await AsyncStorage.getItem('items')
         const itemsArray = storedItems ? JSON.parse(storedItems):[]
         itemsArray.map((price)=>(
@@ -105,14 +100,12 @@ export default function Cart({navigation}) {
         const itemsArray = storedItems ? JSON.parse(storedItems):[]
         const newItems = itemsArray.filter((product)=>product.id != item.id)
         await AsyncStorage.setItem('items',JSON.stringify(newItems))
-
         await fetchItems()
         await totalPrice()
 
     }
 
-   
-  return (
+  return payAmount == 0 ?(
     <SafeAreaView style={styles.Main}>
         <View style={styles.NavContainer}>
             <TouchableOpacity onPress={()=>navigation.goBack()} style={styles.NavButton}>
@@ -123,21 +116,42 @@ export default function Cart({navigation}) {
                 <CartLogo width={35} height={35} />            
             </TouchableOpacity>
         </View>
-        {/* <View style={styles.emptyContainer}>
+        
+            <View style={styles.emptyContainer}>
                 <Text style={styles.emptyTitle}>Hey,it feels so light !</Text>
                 <Text style={styles.emptySub}>there is nothing in your cart.Let's add some items.</Text>
-        </View> */}
+            </View> 
+    </SafeAreaView>
+
+  ): (
+    <SafeAreaView style={styles.Main}>
+        <View style={styles.NavContainer}>
+            <TouchableOpacity onPress={()=>navigation.goBack()} style={styles.NavButton}>
+                <Arrow width={35} height={35} />
+            </TouchableOpacity>
+            <Text style={styles.NavText}>My Cart</Text>
+            <TouchableOpacity style={styles.NavButton}>
+                <CartLogo width={35} height={35} />            
+            </TouchableOpacity>
+        </View>
+        
+            <View style={styles.emptyContainer}>
+                <Text style={styles.emptyTitle}>Hey,it feels so light !</Text>
+                <Text style={styles.emptySub}>there is nothing in your cart.Let's add some items.</Text>
+            </View> 
+    
+
         <FlatList 
         contentContainerStyle={styles.productItems}
         showsVerticalScrollIndicator={false}
         data={cartItems}
-        
         renderItem={({item})=>(
             <View  style={styles.productContainer}>
                 <View style={styles.imageContainer}>
                     <Image style={styles.productImage} source={item.image} />
                 </View>
                 <View style={styles.productDetails}>
+                    <Text style={[styles.productName,{marginBottom: 10}]}>{item.style}</Text>
                     <Text style={styles.productName}>{item.name}</Text>
                     <Text style={styles.productSize}>Size : {item.size}</Text>
                     <View style={styles.priceBox}>
@@ -180,7 +194,7 @@ export default function Cart({navigation}) {
                 <Text style={styles.priceTitle}>Total</Text>
                 <Text style={styles.price}>$ {payAmount}</Text>
             </View>
-            <TouchableOpacity onPress={async()=>console.log(cartItems)} style={styles.checkoutButton}>
+            <TouchableOpacity onPress={()=>navigation.navigate('Payment')} style={styles.checkoutButton}>
                 <Text style={styles.checkoutText}>Checkout</Text>
             </TouchableOpacity>
         </View>
@@ -215,7 +229,6 @@ const styles = StyleSheet.create({
         justifyContent : 'center',
         width: '100%',
         flex :1,
-        display : 'none'
     },
     emptyTitle : {
         color : '#000',
@@ -237,91 +250,89 @@ const styles = StyleSheet.create({
         flex :1,
         justifyContent: 'space-between',
         marginBottom: 20
-
     },
     imageContainer : {
         flex : 5/11,
         backgroundColor : 'red',
         height : width/2,
         borderRadius : 8
-
     },
     productImage :{
         height: '100%',
         width:'100%' ,
         borderRadius : 8
-       },
+    },
        productDetails:{
         flex : 6/11,
         paddingLeft : 10
 
-       },
+    },
        productName:{
-        fontSize:20,
+        fontSize:18,
         color : '#000',
-        fontWeight: '600',
+        fontWeight: '500',
         
         
 
-       },
+    },
        productSize:{
         color : '#A6A6A6',
         marginVertical : 20,
-       },
+    },
        priceBox : {
         marginBottom: 20,
         flexDirection : 'row',
-       },
+    },
        dollar : {
         fontWeight: '600',
         fontSize:20,
         color : '#FB975D'
-       },
+    },
        productPrice:{
         fontSize:20,
         color : '#000',
         fontWeight: '600',
-       },
+    },
        prodBottomContainer:{
         flexDirection: 'row',
         justifyContent : 'space-between',
         alignItems : 'center'
         
-       },
+    },
        prodButtonContainer:{
         flexDirection: 'row',
         justifyContent : 'space-between',
         alignItems : 'center',
         width: 90
-       },
+    },
        changeButton:{},
        quantity :{
         color : '#000',
         fontSize: 20,
         fontWeight: '600'
-       },
+    },
        deleteButton:{},
        checkoutContainer:{
         paddingVertical : 20,
         width: '100%'
 
-       },
+    },
        promoContainer:{
         width: '100%',
         flexDirection: 'row',
         justifyContent : 'space-between'
-       },
+    },
        promo:{
         color : '#000',
         fontSize:20,
         fontWeight: '600'
-       },
+    },
        priceContainer:{
         marginTop: 20,
         flexDirection : 'row',
         justifyContent : 'space-between',
         alignItems : 'center'
-       },
+    },
        priceTitle:{
         fontWeight : '600',
         color : '#A6A6A6',

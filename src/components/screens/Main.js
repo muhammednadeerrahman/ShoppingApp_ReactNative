@@ -85,7 +85,7 @@ export default function Main({navigation}) {
 
 
 
-    },[category])
+    },[category, setData])
     
 
   const isCarousal =useRef(null);
