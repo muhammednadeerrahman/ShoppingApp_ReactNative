@@ -86,16 +86,18 @@ export default function Payment({navigation}) {
 
   return (
     <SafeAreaView style={styles.Main}>
-            <View style={styles.NavContainer}>
-                <TouchableOpacity onPress={()=>navigation.goBack()} style={styles.NavButton}>
-                    <Arrow width={35} height={35} />
-                </TouchableOpacity>
-                <Text style={styles.NavText}>Checkout</Text>
-                <TouchableOpacity style={styles.NavButton}>
-                    <CartLogo width={35} height={35} />            
-                </TouchableOpacity>
-            </View>
-            
+        <View style={styles.NavContainer}>
+            <TouchableOpacity onPress={()=>navigation.goBack()} style={styles.NavButton}>
+                <Arrow width={35} height={35} />
+            </TouchableOpacity>
+            <Text style={styles.NavText}>Checkout</Text>
+            <TouchableOpacity style={styles.NavButton}>
+                <CartLogo width={35} height={35} />            
+            </TouchableOpacity>
+        </View>
+        <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+        >
             <View style={styles.detailContainer}>
                 <View style={styles.deliveryContainer}>
                     <Text style={styles.deliveryTitle}>Delivery Address</Text>
@@ -117,54 +119,54 @@ export default function Payment({navigation}) {
             <View style={styles.paymentContainer}>
                 <Text style={styles.paymentTitle}>Payment Method</Text>       
             </View>
-            <FlatList 
-                data={paymentList}
-                showsVerticalScrollIndicator={false}
-                renderItem={({item})=>(
-                   <View style={styles.paymentOptions} >
-                       <View style={styles.PaymentImageContainer}>
-                           <Image style={styles.paymentImage} source={item.image} />
-                       </View>
-                       <View style={styles.paymentDetails}>
-                           <View style={styles.paymentTypeContainer}>
-                               <Text style={styles.paymentName} >{item.paymentMode}</Text>
-                               <Text style={styles.paymentNameDetail} >......{item.number}</Text>
-                           </View>
-                           <TouchableOpacity onPress={()=>{setPaymentActive(item.id)}} style={paymentActive==item.id? styles.paymentSelectionActive: styles.paymentSelection}>
-                               <View style={styles.selectionCircle}></View>
-                           </TouchableOpacity>
-                       </View>
-                   </View>
-                )}
-                contentContainerStyle={styles.paymentList}
-            />   
+            <View style={styles.paymentList}>
+                {paymentList.map((item)=>(
+                     <View key={item.id} style={styles.paymentOptions} >
+                        <View style={styles.PaymentImageContainer}>
+                            <Image style={styles.paymentImage} source={item.image} />
+                        </View>
+                        <View style={styles.paymentDetails}>
+                            <View style={styles.paymentTypeContainer}>
+                                <Text style={styles.paymentName} >{item.paymentMode}</Text>
+                                <Text style={styles.paymentNameDetail} >......{item.number}</Text>
+                            </View>
+                            <TouchableOpacity onPress={()=>{setPaymentActive(item.id)}} style={paymentActive==item.id? styles.paymentSelectionActive: styles.paymentSelection}>
+                                <View style={styles.selectionCircle}></View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
+                ))}
+            </View>
             <View style={styles.cartTitleContainer} >
                 <Text style={styles.cartTitle}>My Cart</Text>
                 <Tag width ={25} height={25} />
             </View>
-            <FlatList 
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                    contentContainerStyle={styles.cartList}
-                    data={cartItems}
-                    renderItem={({item})=>(
-                        <View style={styles.productContainer}>
-                            <View style={styles.imageContainer}>
-                                <Image style={[styles.productImage,]} source={item.image} />
-                            </View>
-                            <View style={styles.productDetails}>
-                                <Text style={styles.productName}>{item.style}</Text>
-                                <Text style={styles.productName}>{item.name}</Text>
-                                <Text style={styles.productSize}>Size : {item.size}</Text>
-                                <View style={styles.priceBox}>
-                                    <Text style={styles.dollar}>$ </Text>
-                                    <Text style={styles.productPrice}>{item.price}</Text>
+            <View style={styles.flatlistContainer}>
+                <FlatList 
+                        showsHorizontalScrollIndicator={false}
+                        horizontal
+                        contentContainerStyle={styles.cartList}
+                        data={cartItems}
+                        renderItem={({item})=>(
+                            <View style={styles.productContainer}>
+                                <View style={styles.imageContainer}>
+                                    <Image style={[styles.productImage,]} source={item.image} />
+                                </View>
+                                <View style={styles.productDetails}>
+                                    <Text style={styles.productName}>{item.style}</Text>
+                                    <Text style={styles.productName}>{item.name}</Text>
+                                    <Text style={styles.productSize}>Size : {item.size}</Text>
+                                    <View style={styles.priceBox}>
+                                        <Text style={styles.dollar}>$ </Text>
+                                        <Text style={styles.productPrice}>{item.price}</Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    )}
-                />
+                        )}
+                    />
+            </View>
+            
             <View style={styles.totalContainer}>
                 <Text style={styles.total}>Total</Text>
                 <Text style={styles.totalCost}>$ {payAmount}</Text>
@@ -172,6 +174,7 @@ export default function Payment({navigation}) {
             <TouchableOpacity style={styles.PaymentButton} onPress={handlePayment}>
                 <Text style={styles.paymentText}>Pay Now</Text>
             </TouchableOpacity> 
+        </ScrollView>
     </SafeAreaView >
   )
 }
@@ -181,7 +184,14 @@ const styles = StyleSheet.create({
         width,
         alignItems: 'center',
         backgroundColor:'#D9D9D9',
-        flex: 1
+        paddingBottom: 20,
+        flex:1
+    },
+    scrollContainer:{
+        width,
+        alignItems: 'center',
+        backgroundColor:'#D9D9D9',
+
     },
     NavContainer :{
         width: '100%',
@@ -338,6 +348,11 @@ const styles = StyleSheet.create({
         fontSize  :18,
         fontWeight : '600',
     },
+    flatlistContainer:{
+        width,
+        flex:1
+
+    },
     cartList:{
         padding: 20,
         minWidth : width,
@@ -383,7 +398,7 @@ const styles = StyleSheet.create({
         color : '#FB975D'
     },
     productPrice:{
-        color : '#000'
+        color : '#000',
     },
  
     totalContainer:{
