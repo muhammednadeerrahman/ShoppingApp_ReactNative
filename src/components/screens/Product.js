@@ -178,7 +178,6 @@ export default function Product({route,navigation}) {
 
                 </View>
             </View>
-            <Text style={styles.sizeTitle}>{size}{color}</Text>
             <View style={styles.colorContainer}>
                 <Text style={styles.colorTitle}>Select Color</Text>
                     <View style={styles.ColorList}>
