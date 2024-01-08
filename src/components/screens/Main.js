@@ -4,6 +4,7 @@ import Carousel,{ getInputRangeFromIndexes }  from 'react-native-snap-carousel';
 import Nav from '../../assets/Assets/nav.svg'
 import Search from '../../assets/Assets/search.svg'
 import Cart from '../../assets/Assets/cart.svg'
+import Heart from '../../assets/Assets/heart.svg'
 
 
 const {width, height}= Dimensions.get('screen')
@@ -83,17 +84,13 @@ export default function Main({navigation}) {
               category : 'winter'
             }
           ]);
-
-
-
     },[category, setData])
-    
-
   const isCarousal =useRef(null);
   
   const render_items=({item})=>(
        <TouchableOpacity onPress={()=>navigation.navigate('Product',{item})} style={styles.sliderContainer}>
           <Image style={styles.sliderImage} source={item.image} />
+          <Heart style={styles.like} width={25} height={25} />
           <Text style={styles.productName}>{item.style} {item.name}</Text>
           <Text style={styles.productPrice}>$ {item.price}</Text>
         </TouchableOpacity>
@@ -258,8 +255,14 @@ const styles = StyleSheet.create({
   sliderImage :{
     width : '100%',
     height : width*.6,
-    borderRadius : 8
+    borderRadius : 8,
+    position: 'relative'
     
+  },
+  like : {
+    position : 'absolute',
+    top : 15,
+    right:15
   },
   productName : {
     color : '#000',
@@ -325,5 +328,5 @@ const styles = StyleSheet.create({
     fontWeight:'600',
     color : '#000',
   },
-  
+
 })

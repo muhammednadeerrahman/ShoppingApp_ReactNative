@@ -12,6 +12,7 @@ export default function Product({route,navigation}) {
     const {item} = route.params
     const [tab, setTab]=useState(1)
     const [colorTab, setColorTab]=useState(0)
+    const [like,setLike] = useState(false)
 
     const addCart = async () => {
         const details = {
@@ -109,15 +110,6 @@ export default function Product({route,navigation}) {
     
     const [size,setSize] =useState('s')
     const [color,setColor] =useState('#fff')
-    // const [details,setDetails] = useState({
-    //     id : `${item.id}+${size}+${color} `,
-    //     style: item.style,
-    //     name : item.name,
-    //     image : item.image,
-    //     size : null,
-    //     color: null,
-    //     price : item.price
-    // })
 
     const updateSize = (data)=>{
         if (data) {
@@ -153,8 +145,9 @@ export default function Product({route,navigation}) {
             >
                 <Arrow  width={35} height={35} />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={.8}>
-                <Heart width={35} height={35} />
+            <TouchableOpacity activeOpacity={.8} onPress={()=> setLike(!like)}>
+                {like == false ? <Heart width={35} height={35} />
+                : <Image style={styles.heart} source={require("../../assets/Assets/heart2.png")}/>}
             </TouchableOpacity>
         </View>
         <ScrollView
@@ -338,5 +331,10 @@ const styles = StyleSheet.create({
         fontSize:18,
         fontWeight:'500'
     },
+    heart:{
+        width:30,
+        height:30,
+        aspectRatio:1/1
+    }
 
 })
