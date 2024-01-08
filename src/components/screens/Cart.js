@@ -112,7 +112,7 @@ export default function Cart({navigation}) {
                 <Arrow width={35} height={35} />
             </TouchableOpacity>
             <Text style={styles.NavText}>My Cart</Text>
-            <TouchableOpacity style={styles.NavButton}>
+            <TouchableOpacity onPress={()=>navigation.navigate('Cart')} style={styles.NavButton}>
                 <CartLogo width={35} height={35} />            
             </TouchableOpacity>
         </View>

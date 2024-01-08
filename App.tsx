@@ -10,6 +10,7 @@ import Product from './src/components/screens/Product';
 import Cart from './src/components/screens/Cart';
 import Payment from './src/components/screens/Payment';
 
+
 export default function App() {
 
   const Stack = createNativeStackNavigator()
@@ -23,7 +24,7 @@ export default function App() {
           screenOptions={
             {headerShown : false}
           }
-          initialRouteName='Main'
+          initialRouteName='SignUpPage'
         >
             <Stack.Screen name='SignUp' component={SignUpPage}  />
             <Stack.Screen name='Main' component={Main}  />

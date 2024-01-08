@@ -5,6 +5,7 @@ import Nav from '../../assets/Assets/nav.svg'
 import Search from '../../assets/Assets/search.svg'
 import Cart from '../../assets/Assets/cart.svg'
 
+
 const {width, height}= Dimensions.get('screen')
 
 export default function Main({navigation}) {
@@ -117,7 +118,7 @@ export default function Main({navigation}) {
       </View>
 
       <View style= {styles.titleContainer}>
-        <Text style={styles.title}>Find your style</Text>
+        <Text style={[styles.title,]}>Find your style</Text>
         <Image style={styles.titleImage} source={require('../../assets/Assets/vector.png')} />
       </View>
       <View style={styles.Route}>
@@ -203,7 +204,8 @@ const styles = StyleSheet.create({
   title : {
     fontSize :24,
     color : '#000',
-    fontWeight : '600',
+    fontWeight : '700',
+    fontFamily: "Gorditas-Regular"
 
   },
   titleImage:{
@@ -239,7 +241,8 @@ const styles = StyleSheet.create({
   ButtonText: {
     color : '#000',
     fontSize: 16,
-    fontWeight: '600'
+    fontWeight: '700',
+    fontFamily: 'Gorditas-Regular'
   },
   ButtonTextActive:{
     color : '#fff',

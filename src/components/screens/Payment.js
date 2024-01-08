@@ -91,7 +91,7 @@ export default function Payment({navigation}) {
                 <Arrow width={35} height={35} />
             </TouchableOpacity>
             <Text style={styles.NavText}>Checkout</Text>
-            <TouchableOpacity style={styles.NavButton}>
+            <TouchableOpacity onPress={()=>navigation.navigate('Cart')} style={styles.NavButton}>
                 <CartLogo width={35} height={35} />            
             </TouchableOpacity>
         </View>
